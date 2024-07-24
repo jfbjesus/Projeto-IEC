@@ -1,10 +1,11 @@
 #include <Servo.h>
-
+//https://github.com/jfbjesus/Projeto-IEC/tree/main?tab=readme-ov-file
 String ssid     	= "Simulator Wifi";  	
 String password 	= ""; 				 	
 String host     	= "api.thingspeak.com";
 const int httpPort  = 80;					
 String uri 			= "/update?api_key=Y79U1AJ9DBFOWOBF&field1=";
+String uri2 		= "/update?api_key=Y79U1AJ9DBFOWOBF&field2=";
 
 
 int setupESP8266(void) {
@@ -32,6 +33,32 @@ void enviaTemperaturaESP8266(void) {
   delay(10); 
   if (!Serial.find("SEND OK\r\n")) return;
 }
+int direc;
+void enviaPotenciometroESP8266(void) {
+ 
+  if(analogRead(A1)>=750)
+  {
+    direc=1;
+  }
+  if(analogRead(A1)<=273)
+  {
+    direc=-1;
+  }
+  if(analogRead(A1)>273 && analogRead(A1)<750)
+  {
+    direc=0;
+  }  
+  String httpPacket = "GET " + uri2 + String(direc) + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n";
+  int length = httpPacket.length();
+  Serial.print("AT+CIPSEND=");
+  Serial.println(length);
+  delay(10); 
+  Serial.print(httpPacket);
+  delay(10); 
+  if (!Serial.find("SEND OK\r\n")) return;
+
+}
+
 
 Servo roda,roda2, eixo;
 int valor, valor2, angulo, vel, vel2;
@@ -57,14 +84,17 @@ void movimento(){
    if(analogRead(A1)>=750)
    {
      angulo=43;
+     //direc=1;
    }
    if(analogRead(A1)<=273)
    {
      angulo=137;
+     //direc=-1;
    }
    if(analogRead(A1)>273 && analogRead(A1)<750)
    {
      angulo=92;
+     //=0;
    }  
    eixo.write(angulo);
    roda.write(vel);
@@ -76,11 +106,12 @@ void setup() {
   roda2.attach(7, 500, 2500);
   eixo.attach(9);
   setupESP8266();
-  Serial.begin(9600);
 }
 
 void loop() {
   enviaTemperaturaESP8266();
-  Serial.println(analogRead(A0));
+  //enviaPotenciometroESP8266;
+  Serial.println(direc);
   movimento();
+  delay(1000);
 }
