@@ -36,16 +36,7 @@ void enviaTemperaturaESP8266(void) {
 Servo roda,roda2, eixo;
 int valor, valor2, angulo, vel, vel2;
 
-void setup() {
-  roda.attach(8, 500, 2500);
-  roda2.attach(7, 500, 2500);
-  setupESP8266();
-  Serial.begin(9600);
-}
-
-void loop() {
-  enviaTemperaturaESP8266();
-  Serial.println(analogRead(A0));
+void movimento(){
    valor = digitalRead(13);
    valor2 = digitalRead(2);
    if(valor==HIGH)
@@ -78,5 +69,18 @@ void loop() {
    eixo.write(angulo);
    roda.write(vel);
    roda2.write(vel2);
+}
 
+void setup() {
+  roda.attach(8, 500, 2500);
+  roda2.attach(7, 500, 2500);
+  eixo.attach(9);
+  setupESP8266();
+  Serial.begin(9600);
+}
+
+void loop() {
+  enviaTemperaturaESP8266();
+  Serial.println(analogRead(A0));
+  movimento();
 }
