@@ -62,6 +62,7 @@ void enviaPotenciometroESP8266(void) {
 
 Servo roda,roda2, eixo;
 int valor, valor2, angulo, vel, vel2;
+int mov;
 
 void movimento(){
    valor = digitalRead(13);
@@ -70,16 +71,19 @@ void movimento(){
    {
      vel=95;
      vel2=85;
+     mov=1;
    }
    if(valor2==HIGH)
    {
      vel=85;
      vel2=95;
+     mov=1;
    }
    if(valor==LOW && valor2==LOW)
    {
      vel=90;
      vel2=90;
+     mov=0;
    }
    if(analogRead(A1)>=750)
    {
@@ -109,9 +113,11 @@ void setup() {
 }
 
 void loop() {
+  if(mov==0){
   enviaTemperaturaESP8266();
+  delay(100);
+  }
   //enviaPotenciometroESP8266;
-  Serial.println(direc);
+  Serial.println(mov);
   movimento();
-  delay(1000);
 }
