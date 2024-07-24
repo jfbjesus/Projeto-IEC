@@ -2,27 +2,26 @@
 
 String ssid     	= "Simulator Wifi";  	
 String password 	= ""; 				 	
-String host     	= "api.thingspeak.com"; 
+String host     	= "api.thingspeak.com";
 const int httpPort  = 80;					
-String uri 			= "/update?api_key=TE4HT8QM3U9SFN3H&field1=";
+String uri 			= "/update?api_key=Y79U1AJ9DBFOWOBF&field1=";
+
 
 int setupESP8266(void) {
-  Serial.begin(115200);   
+  Serial.begin(115200);  
   Serial.println("AT");   
   delay(10);        
   if (!Serial.find("OK")) return 1;
   Serial.println("AT+CWJAP=\"" + ssid + "\",\"" + password + "\"");
-  delay(10);      
+  delay(10);       
   if (!Serial.find("OK")) return 2;
   Serial.println("AT+CIPSTART=\"TCP\",\"" + host + "\"," + httpPort);
-  delay(50);    
-  if (!Serial.find("OK")) return 3;
-  
+  delay(50);       
+  if (!Serial.find("OK")) return 3; 
   return 0;
 }
  
 void enviaTemperaturaESP8266(void) {
-  
   int temp = map(analogRead(A0),20,358,-40,125); 
   String httpPacket = "GET " + uri + String(temp) + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n";
   int length = httpPacket.length();
@@ -32,25 +31,21 @@ void enviaTemperaturaESP8266(void) {
   Serial.print(httpPacket);
   delay(10); 
   if (!Serial.find("SEND OK\r\n")) return;
-
 }
-
 
 Servo roda,roda2, eixo;
 int valor, valor2, angulo, vel, vel2;
-void setup()
-{
-  setupESP8266();
-  Serial.begin(9600);
+
+void setup() {
   roda.attach(8, 500, 2500);
   roda2.attach(7, 500, 2500);
-  eixo.attach(9);
-  eixo.write(92);
-  delay(1500);
+  setupESP8266();
+  Serial.begin(9600);
 }
 
-void loop()
-{ 
+void loop() {
+  enviaTemperaturaESP8266();
+  Serial.println(analogRead(A0));
    valor = digitalRead(13);
    valor2 = digitalRead(2);
    if(valor==HIGH)
@@ -80,10 +75,8 @@ void loop()
    {
      angulo=92;
    }  
-   Serial.println(analogRead(A1));
    eixo.write(angulo);
    roda.write(vel);
    roda2.write(vel2);
-   enviaTemperaturaESP8266();
-   Serial.println(analogRead(A0));
+
 }
