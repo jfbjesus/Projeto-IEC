@@ -4,7 +4,7 @@ String ssid     	= "Simulator Wifi";
 String password 	= ""; 				 	
 String host     	= "api.thingspeak.com"; 
 const int httpPort  = 80;					
-String uri 			= "/update?api_key=TE4HT8QM3U9SFN3H&field3=";
+String uri 			= "/update?api_key=TE4HT8QM3U9SFN3H&field1=";
 
 int setupESP8266(void) {
   Serial.begin(115200);   
