@@ -34,32 +34,6 @@ void enviaTemperaturaESP8266(void) {
   if (!Serial.find("SEND OK\r\n")) return;
 }
 int direc;
-void enviaPotenciometroESP8266(void) {
- 
-  if(analogRead(A1)>=750)
-  {
-    direc=1;
-  }
-  if(analogRead(A1)<=273)
-  {
-    direc=-1;
-  }
-  if(analogRead(A1)>273 && analogRead(A1)<750)
-  {
-    direc=0;
-  }  
-  String httpPacket = "GET " + uri2 + String(direc) + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n";
-  int length = httpPacket.length();
-  Serial.print("AT+CIPSEND=");
-  Serial.println(length);
-  delay(10); 
-  Serial.print(httpPacket);
-  delay(10); 
-  if (!Serial.find("SEND OK\r\n")) return;
-
-}
-
-
 Servo roda,roda2, eixo;
 int valor, valor2, angulo, vel, vel2;
 int mov;
